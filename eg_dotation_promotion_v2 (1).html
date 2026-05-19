@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EG · Dotations & Promotions</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0f1f3d;--navy2:#162847;--gold:#c9a84c;--gold2:#e4c070;--gold-pale:#f7f0e0;
+  --cream:#faf8f4;--white:#fff;--g1:#f0ede8;--g2:#ddd9d0;--g3:#aaa59e;--g4:#6b6660;
+  --teal:#1a7a6e;--teal-pale:#e4f3f1;--coral:#c0533a;--coral-pale:#faeae6;
+  --purple:#5a4a8a;--purple-pale:#eeeaf8;--green:#2d7a4f;--green-pale:#e3f5ec;
+  --amber:#8a6a1a;--amber-pale:#fdf3dc;
+  --sh:0 2px 12px rgba(15,31,61,.09);--sh-lg:0 8px 40px rgba(15,31,61,.15);
+  --r:10px;--r-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:#1a1612;min-height:100vh;font-size:14px}
+
+/* ── HEADER ── */
+.hdr{background:var(--navy);color:#fff;padding:0 28px;display:flex;align-items:center;gap:24px;height:54px;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,0,0,.25)}
+.hdr-logo{font-family:'DM Serif Display',serif;font-size:17px;color:var(--gold);white-space:nowrap}
+.hdr-logo span{color:rgba(255,255,255,.45);font-family:'DM Sans',sans-serif;font-size:12px;margin-left:8px}
+.nav{display:flex;gap:2px;margin-left:auto}
+.ntab{padding:6px 15px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);border:none;background:none;transition:all .18s;white-space:nowrap}
+.ntab:hover{color:#fff;background:rgba(255,255,255,.08)}
+.ntab.on{color:var(--gold);background:rgba(201,168,76,.15)}
+
+/* ── LAYOUT ── */
+.app{display:flex;min-height:calc(100vh - 54px)}
+.sb{width:256px;background:#fff;border-right:1px solid var(--g2);display:flex;flex-direction:column;padding:16px 0;flex-shrink:0}
+.main{flex:1;padding:28px 30px;overflow-y:auto;max-width:1200px}
+
+/* ── SIDEBAR ── */
+.sb-lbl{font-size:10px;font-weight:600;color:var(--g3);text-transform:uppercase;letter-spacing:.1em;padding:0 18px;margin:14px 0 5px}
+.sb-search{display:flex;align-items:center;background:var(--g1);border-radius:8px;padding:0 10px;gap:6px;margin:0 12px}
+.sb-search input{border:none;background:none;font-family:'DM Sans',sans-serif;font-size:13px;color:#1a1612;width:100%;padding:8px 0;outline:none}
+.sb-search input::placeholder{color:var(--g3)}
+.sb-list{list-style:none;padding:0 8px;margin-top:4px;overflow-y:auto;max-height:260px}
+.sb-item{padding:8px 10px;border-radius:7px;cursor:pointer;transition:background .14s;display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:13px}
+.sb-item:hover{background:var(--g1)}
+.sb-item.on{background:var(--gold-pale)}
+.sb-item .si-name{font-weight:500}
+.rdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.btn-add{margin:10px 12px 0;background:var(--navy);color:#fff;border:none;border-radius:8px;padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;width:calc(100% - 24px);transition:background .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-add:hover{background:var(--navy2)}
+
+/* ── PILLS / BADGES ── */
+.pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.p-mixte{background:var(--purple-pale);color:var(--purple)}
+.p-dotation{background:var(--teal-pale);color:var(--teal)}
+.p-promotion{background:var(--coral-pale);color:var(--coral)}
+.p-actif{background:var(--green-pale);color:var(--green)}
+.p-encours{background:var(--amber-pale);color:var(--amber)}
+.p-termine{background:var(--g1);color:var(--g3)}
+
+/* ── KPI ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.kpi{background:#fff;border-radius:var(--r-lg);padding:18px 20px;box-shadow:var(--sh);border-left:4px solid}
+.kpi.k-navy{border-color:var(--navy)}.kpi.k-teal{border-color:var(--teal)}
+.kpi.k-coral{border-color:var(--coral)}.kpi.k-gold{border-color:var(--gold)}
+.kpi-lbl{font-size:10px;color:var(--g3);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:5px}
+.kpi-val{font-size:22px;font-weight:600;color:var(--navy)}
+.kpi-sub{font-size:11px;color:var(--g4);margin-top:3px}
+
+/* ── SECTION TITLE ── */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;margin-top:4px}
+.sh-title{font-size:14px;font-weight:600;color:var(--navy);display:flex;align-items:center;gap:8px}
+.page-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy);margin-bottom:4px}
+.page-sub{font-size:12px;color:var(--g4);margin-bottom:22px}
+
+/* ── BUTTONS ── */
+.btn{border:none;border-radius:7px;padding:7px 13px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;gap:5px}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:var(--navy2)}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{background:var(--gold2)}
+.btn-out{background:none;color:var(--navy);border:1px solid var(--g2)}.btn-out:hover{background:var(--g1)}
+.btn-teal{background:var(--teal-pale);color:var(--teal);border:1px solid var(--teal)}.btn-teal:hover{background:var(--teal);color:#fff}
+.btn-coral{background:var(--coral-pale);color:var(--coral);border:1px solid var(--coral)}.btn-coral:hover{background:var(--coral);color:#fff}
+.btn-sm{padding:5px 10px;font-size:11px}
+
+/* ── TABLE ── */
+.tcard{background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh);overflow:hidden;margin-bottom:22px}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--navy);color:rgba(255,255,255,.72);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;padding:10px 13px;text-align:left}
+tbody tr{border-bottom:1px solid var(--g1);transition:background .1s}
+tbody tr:hover{background:var(--cream)}
+tbody tr:last-child{border-bottom:none}
+tbody td{padding:10px 13px;font-size:13px;vertical-align:middle}
+.td-b{font-weight:600}.td-m{color:var(--g4)}.td-r{text-align:right;font-weight:500}
+.td-teal{color:var(--teal);font-weight:600}.td-coral{color:var(--coral);font-weight:600}
+.td-gold{color:var(--gold);font-weight:600}
+
+/* ── CALENDAR ── */
+.cal-wrap{background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh);padding:18px;margin-bottom:22px}
+.cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-nav{background:none;border:1px solid var(--g2);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:14px}
+.cal-nav:hover{background:var(--g1)}
+.cal-month{font-size:14px;font-weight:600;color:var(--navy)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dname{text-align:center;font-size:10px;font-weight:600;color:var(--g3);text-transform:uppercase;padding:3px 0}
+.cal-d{min-height:64px;border-radius:7px;padding:5px;background:var(--g1);font-size:11px}
+.cal-d.empty{background:none}
+.cal-d.has{background:#fff;border:1px solid var(--g2)}
+.cal-dnum{font-weight:600;color:var(--navy);margin-bottom:3px;font-size:11px}
+.cal-ev{border-radius:3px;padding:2px 5px;font-size:10px;font-weight:500;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.ev-d{background:var(--teal-pale);color:var(--teal)}
+.ev-p{background:var(--coral-pale);color:var(--coral)}
+.ev-m{background:var(--purple-pale);color:var(--purple)}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(15,31,61,.55);z-index:300;align-items:flex-start;justify-content:center;padding-top:40px;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-lg);width:740px;max-width:96vw;margin-bottom:40px}
+.modal.sm{width:540px}
+.m-hdr{background:var(--navy);padding:18px 22px;border-radius:var(--r-lg) var(--r-lg) 0 0;display:flex;align-items:center;justify-content:space-between}
+.m-title{font-family:'DM Serif Display',serif;font-size:17px;color:var(--gold)}
+.m-close{background:none;border:none;color:rgba(255,255,255,.55);cursor:pointer;font-size:20px;line-height:1}
+.m-close:hover{color:#fff}
+.m-body{padding:22px}
+.m-foot{padding:14px 22px;border-top:1px solid var(--g1);display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* ── FORMS ── */
+.fg{margin-bottom:14px}
+.flbl{display:block;font-size:10px;font-weight:600;color:var(--g4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;border:1px solid var(--g2);border-radius:7px;padding:8px 11px;font-family:'DM Sans',sans-serif;font-size:13px;color:#1a1612;background:#fff;outline:none;transition:border-color .18s}
+input:focus,select:focus,textarea:focus{border-color:var(--navy)}
+textarea{resize:vertical;min-height:62px}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
+.fr4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+
+/* ── OPÉRATION CARD (dans les listes) ── */
+.op-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh);padding:0;margin-bottom:14px;overflow:hidden;cursor:pointer;transition:box-shadow .18s;border:1px solid transparent}
+.op-card:hover{box-shadow:var(--sh-lg);border-color:var(--g2)}
+.op-card-hdr{display:grid;grid-template-columns:1fr auto;align-items:start;padding:16px 18px 12px;border-bottom:1px solid var(--g1)}
+.op-card-title{font-weight:600;font-size:14px;color:var(--navy);margin-bottom:4px}
+.op-card-meta{font-size:12px;color:var(--g4)}
+.op-card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.op-card-body{display:grid;grid-template-columns:1fr 1px 1fr;gap:0}
+.op-side{padding:14px 18px}
+.op-divider{background:var(--g1);width:1px}
+.op-side-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.op-side-lbl.teal{color:var(--teal)}.op-side-lbl.coral{color:var(--coral)}
+.op-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:3px 0;border-bottom:1px solid var(--g1)}
+.op-row:last-child{border-bottom:none}
+.op-key{color:var(--g4)}.op-val{font-weight:500}
+.op-total{margin-top:8px;font-weight:600;font-size:15px}
+.op-total.teal{color:var(--teal)}.op-total.coral{color:var(--coral)}
+.op-solde{padding:10px 18px;background:var(--g1);display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600}
+
+/* ── INNER TABS ── */
+.itabs{display:flex;gap:2px;background:var(--g1);border-radius:7px;padding:3px;width:fit-content;margin-bottom:18px}
+.itab{padding:6px 16px;border-radius:5px;font-size:12px;font-weight:500;cursor:pointer;color:var(--g4);border:none;background:none;transition:all .18s}
+.itab.on{background:#fff;color:var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+/* ── PARTNER HEADER ── */
+.p-hdr{background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh);padding:18px 22px;margin-bottom:18px;display:flex;align-items:center;gap:18px}
+.p-av{width:46px;height:46px;background:var(--navy);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);flex-shrink:0}
+.p-info h2{font-family:'DM Serif Display',serif;font-size:20px;color:var(--navy)}
+.p-info .pm{font-size:12px;color:var(--g4);margin-top:2px}
+.p-tags{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+
+/* ── BILAN CARD ── */
+.bilan-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px}
+.bilan-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh);padding:18px}
+.bc-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:14px}
+.bc-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--g1);font-size:13px}
+.bc-row:last-child{border-bottom:none}
+.pb-wrap{margin:8px 0 3px}
+.pb-bg{background:var(--g1);border-radius:20px;height:7px;overflow:hidden}
+.pb-fill{height:100%;border-radius:20px;transition:width .5s}
+.pb-teal{background:var(--teal)}.pb-coral{background:var(--coral)}.pb-gold{background:var(--gold)}
+
+/* ── DETAIL OPÉRATION (plein écran) ── */
+.op-detail{background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh);overflow:hidden;margin-bottom:22px}
+.op-detail-hdr{background:var(--navy);padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+.op-detail-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold)}
+.op-detail-meta{font-size:12px;color:rgba(255,255,255,.55);margin-top:3px}
+.op-detail-body{display:grid;grid-template-columns:1fr 1px 1fr;min-height:240px}
+.odd-side{padding:20px 24px}
+.odd-divider{background:var(--g1)}
+.odd-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;margin-bottom:12px;display:flex;align-items:center;gap:6px;padding-bottom:8px;border-bottom:2px solid}
+.odd-label.teal{color:var(--teal);border-color:var(--teal-pale)}
+.odd-label.coral{color:var(--coral);border-color:var(--coral-pale)}
+.spot-line{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:5px 0;border-bottom:1px solid var(--g1)}
+.spot-line:last-child{border-bottom:none}
+.spot-key{color:var(--g4)}.spot-val{font-weight:500}
+.op-detail-foot{padding:14px 24px;border-top:2px solid var(--gold);display:flex;justify-content:space-between;align-items:center;background:var(--gold-pale)}
+.foot-side{font-size:12px;color:var(--g4)}
+.foot-val{font-size:20px;font-weight:700;color:var(--navy)}
+.foot-solde{font-size:20px;font-weight:700}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--g2);border-radius:10px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-logo">Espace Group <span>Dotations & Promotions</span></div>
+  <div class="nav">
+    <button class="ntab on" onclick="nav('operations')">Opérations</button>
+    <button class="ntab" onclick="nav('partenaires')">Partenaires</button>
+    <button class="ntab" onclick="nav('radio')">Par radio</button>
+    <button class="ntab" onclick="nav('reporting')">Reporting</button>
+    <button class="ntab" onclick="nav('tarifs')">Tarifs</button>
+  </div>
+</div>
+
+<div class="app">
+<!-- ═══ SIDEBAR ═══ -->
+<div class="sb">
+  <!-- Opérations sidebar -->
+  <div id="sb-operations">
+    <div class="sb-lbl">Filtrer</div>
+    <div style="padding:0 12px;display:flex;flex-direction:column;gap:6px">
+      <select id="flt-type" onchange="renderOps()" style="font-size:12px">
+        <option value="">Tous types</option>
+        <option>Dotation</option><option>Promotion</option><option>Mixte</option>
+      </select>
+      <select id="flt-radio" onchange="renderOps()" style="font-size:12px">
+        <option value="">Toutes les radios</option>
+      </select>
+      <select id="flt-statut" onchange="renderOps()" style="font-size:12px">
+        <option value="">Tous statuts</option>
+        <option>actif</option><option>encours</option><option>terminé</option>
+      </select>
+    </div>
+    <div class="sb-lbl" style="margin-top:14px">Recherche</div>
+    <div class="sb-search"><input type="text" placeholder="Opération…" oninput="renderOps()" id="flt-q"></div>
+    <button class="btn-add" onclick="openOpModal()">+ Nouvelle opération</button>
+  </div>
+
+  <!-- Partenaires sidebar -->
+  <div id="sb-partenaires" style="display:none">
+    <div class="sb-lbl">Recherche</div>
+    <div class="sb-search"><input type="text" placeholder="Nom partenaire…" oninput="filterPartners(this.value)"></div>
+    <ul class="sb-list" id="partner-sb-list"></ul>
+    <button class="btn-add" onclick="openPartnerModal()">+ Nouveau partenaire</button>
+  </div>
+
+  <!-- Radio sidebar -->
+  <div id="sb-radio" style="display:none">
+    <div class="sb-lbl">Choisir une radio</div>
+    <ul class="sb-list" id="radio-sb-list"></ul>
+  </div>
+
+  <!-- Reporting sidebar -->
+  <div id="sb-reporting" style="display:none">
+    <div class="sb-lbl">Période</div>
+    <div style="padding:0 12px">
+      <div class="fg"><label class="flbl">Du</label><input type="date" id="rp-from" value="2026-01-01" onchange="renderReporting()"></div>
+      <div class="fg"><label class="flbl">Au</label><input type="date" id="rp-to" value="2026-12-31" onchange="renderReporting()"></div>
+    </div>
+    <div class="sb-lbl">Radio</div>
+    <ul class="sb-list" id="rp-radio-list" style="max-height:320px"></ul>
+  </div>
+
+  <!-- Tarifs sidebar -->
+  <div id="sb-tarifs" style="display:none">
+    <div class="sb-lbl">Radio</div>
+    <ul class="sb-list" id="tarif-sb-list"></ul>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+<!-- PAGE OPÉRATIONS -->
+<div id="pg-operations" class="pg">
+  <div class="page-title">Opérations</div>
+  <div class="page-sub">Chaque opération définit ce que le partenaire vous apporte et ce que vous lui offrez en retour.</div>
+  <div class="kpi-row" id="kpi-ops"></div>
+  <div class="sh">
+    <div class="sh-title">Toutes les opérations</div>
+    <button class="btn btn-gold" onclick="openOpModal()">+ Nouvelle opération</button>
+  </div>
+  <div id="ops-list"></div>
+</div>
+
+<!-- PAGE PARTENAIRES -->
+<div id="pg-partenaires" class="pg" style="display:none">
+  <div id="pv-list">
+    <div class="page-title">Partenaires</div>
+    <div class="page-sub">Gérez vos partenaires et consultez l'ensemble de leurs opérations.</div>
+    <div class="kpi-row" id="kpi-partners"></div>
+    <div class="sh">
+      <div class="sh-title">Tous les partenaires</div>
+      <button class="btn btn-gold" onclick="openPartnerModal()">+ Nouveau partenaire</button>
+    </div>
+    <div class="tcard"><table>
+      <thead><tr><th>Partenaire</th><th>Secteur</th><th>Contact</th><th>Radios</th><th>Opérations</th><th>Val. dotation</th><th>Val. spots HT</th><th>Solde</th><th></th></tr></thead>
+      <tbody id="ptable"></tbody>
+    </table></div>
+  </div>
+  <div id="pv-detail" style="display:none">
+    <button class="btn btn-out btn-sm" onclick="backPartners()" style="margin-bottom:14px">← Retour</button>
+    <div id="pdetail-hdr"></div>
+    <div class="itabs">
+      <button class="itab on" onclick="ptab('ops',this)">Opérations</button>
+      <button class="itab" onclick="ptab('dotations',this)">Dotations</button>
+      <button class="itab" onclick="ptab('promotions',this)">Promotions</button>
+      <button class="itab" onclick="ptab('bilan',this)">Bilan échange</button>
+    </div>
+    <div id="pt-ops"></div>
+    <div id="pt-dotations" style="display:none"></div>
+    <div id="pt-promotions" style="display:none"></div>
+    <div id="pt-bilan" style="display:none"></div>
+  </div>
+</div>
+
+<!-- PAGE RADIO -->
+<div id="pg-radio" class="pg" style="display:none">
+  <div class="page-title" id="rp-title">M Radio</div>
+  <div class="page-sub">Calendrier des opérations de dotation et de promotion.</div>
+  <div class="kpi-row" id="kpi-radio"></div>
+  <div class="sh"><div class="sh-title" style="color:var(--teal)">● Dotations</div><button class="btn btn-teal btn-sm" onclick="openOpModal(null,'dotation')">+ Ajouter</button></div>
+  <div class="cal-wrap" id="cal-dot"></div>
+  <div class="sh" style="margin-top:6px"><div class="sh-title" style="color:var(--coral)">● Promotions</div><button class="btn btn-coral btn-sm" onclick="openOpModal(null,'promotion')">+ Ajouter</button></div>
+  <div class="cal-wrap" id="cal-promo"></div>
+  <div class="sh" style="margin-top:4px"><div class="sh-title">Opérations de la radio</div></div>
+  <div id="radio-ops-list"></div>
+</div>
+
+<!-- PAGE REPORTING -->
+<div id="pg-reporting" class="pg" style="display:none">
+  <div class="page-title">Reporting</div>
+  <div class="page-sub">Valorisation globale des échanges dotation / promotion.</div>
+  <div class="kpi-row" id="kpi-rp"></div>
+  <div class="bilan-grid" id="bilan-grid"></div>
+  <div class="sh"><div class="sh-title">Détail par opération</div><button class="btn btn-out btn-sm" onclick="exportCSV()">↓ Export CSV</button></div>
+  <div class="tcard"><table>
+    <thead><tr><th>Opération</th><th>Partenaire</th><th>Radio</th><th>Type</th><th>Période</th><th>Spots</th><th>Val. spots HT</th><th>Val. dotation</th><th>Solde échange</th></tr></thead>
+    <tbody id="rp-table"></tbody>
+  </table></div>
+</div>
+
+<!-- PAGE TARIFS -->
+<div id="pg-tarifs" class="pg" style="display:none">
+  <div class="page-title">Grille tarifaire 2025</div>
+  <div class="page-sub">Tarifs HT issus du fichier de référence Espace Group. Base de valorisation automatique des spots.</div>
+  <div class="tcard"><table>
+    <thead><tr><th>Radio</th><th>Zone</th><th>Bureau</th><th>Formule</th><th>Tarif 20s HT</th><th>Tarif 30s HT</th><th>Bas (20s)</th><th>Haut (20s)</th></tr></thead>
+    <tbody id="tarif-table"></tbody>
+  </table></div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══════════════════════════════════════════
+     MODAL : NOUVELLE / ÉDITION OPÉRATION
+═══════════════════════════════════════════ -->
+<div class="overlay" id="ov-op">
+<div class="modal">
+  <div class="m-hdr">
+    <span class="m-title" id="op-modal-title">Nouvelle opération</span>
+    <button class="m-close" onclick="closeOv('ov-op')">✕</button>
+  </div>
+  <div class="m-body">
+
+    <!-- Identité de l'opération -->
+    <div style="background:var(--g1);border-radius:var(--r);padding:14px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--g4);margin-bottom:10px">Identité de l'opération</div>
+      <div class="fr2">
+        <div class="fg"><label class="flbl">Intitulé *</label><input type="text" id="o-nom" placeholder="Ex : Jeu Été 2026 – Séjour Ibiza"></div>
+        <div class="fg"><label class="flbl">Partenaire *</label><select id="o-partner"></select></div>
+      </div>
+      <div class="fr3">
+        <div class="fg"><label class="flbl">Radio *</label><select id="o-radio" onchange="onRadioChange()"></select></div>
+        <div class="fg"><label class="flbl">Date début</label><input type="date" id="o-deb" value="2026-06-01"></div>
+        <div class="fg"><label class="flbl">Date fin</label><input type="date" id="o-fin" value="2026-06-30"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label class="flbl">Émission / tranche</label><input type="text" id="o-emission" placeholder="Morning, Drive, All day…"></div>
+        <div class="fg"><label class="flbl">Type</label>
+          <select id="o-type" onchange="toggleSections()">
+            <option value="mixte">Mixte (dotation + promotion)</option>
+            <option value="dotation">Dotation seule</option>
+            <option value="promotion">Promotion seule</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- CE QU'ON REÇOIT — Dotation -->
+    <div id="sec-dot" style="border:1.5px solid var(--teal-pale);border-radius:var(--r);padding:14px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+        🎁 Ce qu'on reçoit — Dotation
+      </div>
+      <div class="fr3">
+        <div class="fg"><label class="flbl">Nature du lot</label><input type="text" id="o-lot" placeholder="Séjour, bon cadeau, produits…"></div>
+        <div class="fg"><label class="flbl">Valeur unitaire HT (€)</label><input type="number" id="o-valunit" placeholder="0" min="0" oninput="recalc()"></div>
+        <div class="fg"><label class="flbl">Quantité</label><input type="number" id="o-qty" placeholder="0" min="0" oninput="recalc()"></div>
+      </div>
+      <div class="fg"><label class="flbl">Conditions / validité</label><input type="text" id="o-dot-cond" placeholder="Valable jusqu'au… / restrictions…"></div>
+      <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;font-size:13px;margin-top:4px">
+        <span style="color:var(--g4)">Valeur totale dotation :</span>
+        <strong id="dot-total" style="color:var(--teal);font-size:16px">0 €</strong>
+      </div>
+    </div>
+
+    <!-- CE QU'ON DONNE — Promotion -->
+    <div id="sec-promo" style="border:1.5px solid var(--coral-pale);border-radius:var(--r);padding:14px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--coral);margin-bottom:10px">
+        📻 Ce qu'on donne — Promotion antenne
+      </div>
+
+      <!-- Spots -->
+      <div style="font-size:11px;font-weight:600;color:var(--g4);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Spots diffusés</div>
+      <div class="fr4">
+        <div class="fg"><label class="flbl">Format</label>
+          <select id="o-format" onchange="recalc()">
+            <option value="20">20 secondes</option>
+            <option value="30">30 secondes</option>
+          </select>
+        </div>
+        <div class="fg"><label class="flbl">Tranche horaire</label>
+          <select id="o-tranche" onchange="recalc()">
+            <option value="morning">Morning (06h–09h)</option>
+            <option value="day">Journée (09h–17h)</option>
+            <option value="drive">Drive (17h–19h)</option>
+            <option value="soir">Soirée (19h–24h)</option>
+          </select>
+        </div>
+        <div class="fg"><label class="flbl">Nb de spots</label><input type="number" id="o-spots" placeholder="0" min="0" oninput="recalc()"></div>
+        <div class="fg"><label class="flbl">Tarif unit. auto (€)</label>
+          <input type="text" id="o-tarif-unit" readonly style="background:var(--g1);color:var(--navy);font-weight:600">
+        </div>
+      </div>
+
+      <!-- Autres actions promo -->
+      <div style="font-size:11px;font-weight:600;color:var(--g4);margin:8px 0;text-transform:uppercase;letter-spacing:.06em">Actions complémentaires</div>
+      <div class="fr2">
+        <div class="fg"><label class="flbl">Type de promo complémentaire</label>
+          <select id="o-promo-type">
+            <option value="">Spots uniquement</option>
+            <option value="jingle">Jingle sponsorisé</option>
+            <option value="interview">Interview / pastille</option>
+            <option value="digital">Digital (réseaux sociaux)</option>
+            <option value="event">Événementiel</option>
+            <option value="logo-site">Logo site web</option>
+            <option value="newsletter">Newsletter</option>
+            <option value="mixte-digital">Spots + digital + event</option>
+          </select>
+        </div>
+        <div class="fg"><label class="flbl">Valorisation promo complémentaire (€)</label>
+          <input type="number" id="o-promo-extra" placeholder="0" min="0" oninput="recalc()">
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:20px;font-size:13px;margin-top:4px">
+        <span style="color:var(--g4)">Valorisation spots HT :</span><strong id="promo-spots-val" style="color:var(--coral)">0 €</strong>
+        <span style="color:var(--g4)">Total promotion HT :</span><strong id="promo-total-val" style="color:var(--coral);font-size:16px">0 €</strong>
+      </div>
+    </div>
+
+    <div class="fg"><label class="flbl">Notes / conditions particulières</label><textarea id="o-notes" placeholder="Animateur dédié, restrictions, conditions spécifiques…"></textarea></div>
+    <div class="fg">
+      <label class="flbl">Statut</label>
+      <select id="o-statut">
+        <option value="actif">Actif</option>
+        <option value="encours">En cours de négociation</option>
+        <option value="terminé">Terminé</option>
+      </select>
+    </div>
+  </div>
+  <div class="m-foot">
+    <div style="font-size:13px">
+      Solde échange : <strong id="solde-modal" style="font-size:16px">—</strong>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-out" onclick="closeOv('ov-op')">Annuler</button>
+      <button class="btn btn-gold" onclick="saveOp()">Enregistrer l'opération</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- MODAL PARTENAIRE -->
+<div class="overlay" id="ov-partner">
+<div class="modal sm">
+  <div class="m-hdr"><span class="m-title">Nouveau partenaire</span><button class="m-close" onclick="closeOv('ov-partner')">✕</button></div>
+  <div class="m-body">
+    <div class="fr2">
+      <div class="fg"><label class="flbl">Raison sociale *</label><input type="text" id="np-nom" placeholder="Ex : Décathlon Lyon"></div>
+      <div class="fg"><label class="flbl">Secteur</label><input type="text" id="np-secteur" placeholder="Sport, Auto…"></div>
+    </div>
+    <div class="fr2">
+      <div class="fg"><label class="flbl">Contact</label><input type="text" id="np-contact" placeholder="Prénom Nom"></div>
+      <div class="fg"><label class="flbl">Email</label><input type="text" id="np-email" placeholder="contact@société.fr"></div>
+    </div>
+    <div class="fg"><label class="flbl">Radios associées</label><div id="np-radios" style="display:flex;flex-wrap:wrap;gap:7px;margin-top:4px"></div></div>
+    <div class="fg"><label class="flbl">Notes</label><textarea id="np-notes" placeholder="Historique, contexte…"></textarea></div>
+  </div>
+  <div class="m-foot" style="justify-content:flex-end">
+    <button class="btn btn-out" onclick="closeOv('ov-partner')">Annuler</button>
+    <button class="btn btn-gold" onclick="savePartner()">Enregistrer</button>
+  </div>
+</div>
+</div>
+
+<!-- MODAL DETAIL OPÉRATION (vue lecture) -->
+<div class="overlay" id="ov-detail">
+<div class="modal">
+  <div class="m-hdr">
+    <div>
+      <div class="m-title" id="detail-op-name">—</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:3px" id="detail-op-meta">—</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="btn btn-gold btn-sm" id="detail-edit-btn" onclick="editCurrentOp()">✏ Modifier</button>
+      <button class="m-close" onclick="closeOv('ov-detail')">✕</button>
+    </div>
+  </div>
+  <div id="detail-body" class="m-body" style="padding:0"></div>
+</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// DONNÉES
+// ══════════════════════════════════════════════
+const RADIOS = [
+  {nom:'M Radio',col:'#c9a84c'},{nom:'Jazz Radio',col:'#1a7a6e'},{nom:'Virgin Radio',col:'#c0533a'},
+  {nom:'Radio Espace',col:'#5a4a8a'},{nom:'Générations',col:'#2d7a4f'},
+  {nom:'Alpes 1 Alpes du Sud',col:'#0f5a8a'},{nom:'Alpes 1 Isère',col:'#1a6fa0'},
+  {nom:'ODS Radio',col:'#8a5a1a'},{nom:'RVA',col:'#5a0f1a'},
+  {nom:'Nice Radio',col:'#2d4a8a'},
+  {nom:'La Radio Plus Nord',col:'#1a5a4a'},{nom:'La Radio Plus Sud',col:'#4a5a1a'},
+];
+
+const TARIFS = [
+  {radio:'M Radio',zone:'Lyon',t20:21,t30:29.4},{radio:'M Radio',zone:'IDF',t20:48.3,t30:67.62},
+  {radio:'M Radio',zone:'Marseille',t20:24.15,t30:33.81},{radio:'M Radio',zone:'Clermont',t20:13.65,t30:19.11},
+  {radio:'M Radio',zone:'Nice',t20:27.3,t30:38.22},{radio:'M Radio',zone:'Réseau Natio',t20:151.2,t30:211.68},
+  {radio:'Jazz Radio',zone:'Lyon',t20:35.7,t30:49.98},{radio:'Jazz Radio',zone:'Annecy',t20:28.35,t30:39.69},
+  {radio:'Jazz Radio',zone:'Natio',t20:228.9,t30:320.46},{radio:'Virgin Radio',zone:'Lyon',t20:21,t30:29.4},
+  {radio:'Virgin Radio',zone:'Réseau',t20:106.05,t30:148.47},{radio:'Radio Espace',zone:'Lyon',t20:21,t30:29.4},
+  {radio:'Générations',zone:'Lyon',t20:21,t30:29.4},{radio:'Générations',zone:'IDF',t20:42,t30:58.8},
+  {radio:'Alpes 1 Alpes du Sud',zone:'Réseau',t20:115.5,t30:161.7},{radio:'Alpes 1 Isère',zone:'Isère-Grenoble',t20:24.15,t30:33.81},{radio:'ODS Radio',zone:'Annecy',t20:30.45,t30:42.63},
+  {radio:'RVA',zone:'Clermont',t20:16.8,t30:23.52},{radio:'Nice Radio',zone:'Nice',t20:21,t30:29.4},
+  {radio:'La Radio Plus Nord',zone:'Annecy',t20:21,t30:29.4},{radio:'La Radio Plus Nord',zone:'Réseau',t20:134.4,t30:188.16},
+  {radio:'La Radio Plus Sud',zone:'Gap',t20:14.7,t30:20.58},
+];
+
+const COEF = {morning:1.2, day:0.9, drive:1.15, soir:0.75};
+
+let partners = [];
+
+let operations = [];
+
+let currentRadio = 'M Radio';
+let currentPartner = null;
+let editingOpId = null;
+let calMon = {dot:new Date(2026,5,1), promo:new Date(2026,5,1)};
+
+// ══════════════════════════════════════════════
+// CALCULS
+// ══════════════════════════════════════════════
+function getTarif20(radio){
+  const t = TARIFS.find(x=>x.radio===radio);
+  return t ? t.t20 : 21;
+}
+function valSpots(op){
+  if(!op.spots) return 0;
+  const t = getTarif20(op.radio);
+  const cf = op.format==='30'?1.4:1;
+  const ch = COEF[op.tranche]||1;
+  return Math.round(t * cf * ch * op.spots);
+}
+function valDot(op){ return (op.valunit||0)*(op.qty||0); }
+function valPromo(op){ return valSpots(op)+(op.promoExtra||0); }
+function solde(op){ return valPromo(op)-valDot(op); }
+
+// ══════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════
+function nav(pg){
+  document.querySelectorAll('.pg').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('pg-'+pg).style.display='block';
+  [...document.querySelectorAll('.ntab')].find(t=>t.textContent.toLowerCase().includes(pg.substring(0,5)))?.classList.add('on');
+  ['operations','partenaires','radio','reporting','tarifs'].forEach(id=>{
+    const el=document.getElementById('sb-'+id);
+    if(el) el.style.display=(id===pg?'block':'none');
+  });
+  if(pg==='operations') renderOps();
+  if(pg==='partenaires') renderPartners();
+  if(pg==='radio') renderRadioPage();
+  if(pg==='reporting') renderReporting();
+  if(pg==='tarifs') renderTarifs();
+}
+
+// ══════════════════════════════════════════════
+// MODAL OPÉRATION
+// ══════════════════════════════════════════════
+function openOpModal(partnerId, type){
+  editingOpId = null;
+  document.getElementById('op-modal-title').textContent = 'Nouvelle opération';
+  // Reset
+  ['o-nom','o-lot','o-dot-cond','o-emission','o-notes'].forEach(id=>document.getElementById(id).value='');
+  ['o-valunit','o-qty','o-spots','o-promo-extra'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('o-deb').value='2026-06-01';
+  document.getElementById('o-fin').value='2026-06-30';
+  document.getElementById('o-format').value='20';
+  document.getElementById('o-tranche').value='morning';
+  document.getElementById('o-promo-type').value='';
+  document.getElementById('o-statut').value='actif';
+  document.getElementById('o-type').value=type||'mixte';
+
+  // Populate selects
+  const ps = document.getElementById('o-partner');
+  ps.innerHTML = partners.map(p=>`<option value="${p.id}" ${p.id===partnerId?'selected':''}>${p.nom}</option>`).join('');
+  const rs = document.getElementById('o-radio');
+  rs.innerHTML = RADIOS.map(r=>`<option value="${r.nom}" ${r.nom===currentRadio?'selected':''}>${r.nom}</option>`).join('');
+
+  toggleSections();
+  recalc();
+  document.getElementById('ov-op').classList.add('open');
+}
+
+function editOp(id){
+  const op = operations.find(o=>o.id===id);
+  if(!op) return;
+  editingOpId = id;
+  document.getElementById('op-modal-title').textContent = 'Modifier l\'opération';
+
+  const ps = document.getElementById('o-partner');
+  ps.innerHTML = partners.map(p=>`<option value="${p.id}">${p.nom}</option>`).join('');
+  const rs = document.getElementById('o-radio');
+  rs.innerHTML = RADIOS.map(r=>`<option value="${r.nom}">${r.nom}</option>`).join('');
+
+  document.getElementById('o-nom').value=op.nom;
+  document.getElementById('o-partner').value=op.partnerId;
+  document.getElementById('o-radio').value=op.radio;
+  document.getElementById('o-deb').value=op.deb;
+  document.getElementById('o-fin').value=op.fin;
+  document.getElementById('o-type').value=op.type;
+  document.getElementById('o-emission').value=op.emission||'';
+  document.getElementById('o-statut').value=op.statut||'actif';
+  document.getElementById('o-lot').value=op.lot||'';
+  document.getElementById('o-valunit').value=op.valunit||'';
+  document.getElementById('o-qty').value=op.qty||'';
+  document.getElementById('o-dot-cond').value=op.dotCond||'';
+  document.getElementById('o-format').value=op.format||'20';
+  document.getElementById('o-tranche').value=op.tranche||'morning';
+  document.getElementById('o-spots').value=op.spots||'';
+  document.getElementById('o-promo-type').value=op.promoType||'';
+  document.getElementById('o-promo-extra').value=op.promoExtra||'';
+  document.getElementById('o-notes').value=op.notes||'';
+
+  toggleSections(); recalc();
+  closeOv('ov-detail');
+  document.getElementById('ov-op').classList.add('open');
+}
+
+function editCurrentOp(){
+  const id = parseInt(document.getElementById('detail-edit-btn').dataset.id);
+  editOp(id);
+}
+
+function toggleSections(){
+  const t = document.getElementById('o-type').value;
+  document.getElementById('sec-dot').style.display = t!=='promotion'?'block':'none';
+  document.getElementById('sec-promo').style.display = t!=='dotation'?'block':'none';
+}
+
+function onRadioChange(){ recalc(); }
+
+function recalc(){
+  const radio = document.getElementById('o-radio').value;
+  const format = document.getElementById('o-format').value;
+  const tranche = document.getElementById('o-tranche').value;
+  const spots = parseInt(document.getElementById('o-spots').value)||0;
+  const promoExtra = parseFloat(document.getElementById('o-promo-extra').value)||0;
+  const valunit = parseFloat(document.getElementById('o-valunit').value)||0;
+  const qty = parseInt(document.getElementById('o-qty').value)||0;
+
+  const t20 = getTarif20(radio);
+  const cf = format==='30'?1.4:1;
+  const ch = COEF[tranche]||1;
+  const unitaire = t20*cf*ch;
+  const vsSpots = Math.round(unitaire*spots);
+  const vPromo = vsSpots + promoExtra;
+  const vDot = valunit*qty;
+  const sol = vPromo - vDot;
+
+  document.getElementById('o-tarif-unit').value = unitaire.toFixed(2)+' €';
+  document.getElementById('dot-total').textContent = fmt(vDot);
+  document.getElementById('promo-spots-val').textContent = fmt(vsSpots);
+  document.getElementById('promo-total-val').textContent = fmt(vPromo);
+
+  const se = document.getElementById('solde-modal');
+  se.textContent = (sol>=0?'+':'')+fmt(sol);
+  se.style.color = sol>=0?'var(--teal)':'var(--coral)';
+}
+
+function saveOp(){
+  const nom = document.getElementById('o-nom').value.trim();
+  if(!nom){ alert('Veuillez saisir un intitulé.'); return; }
+  const op = {
+    id: editingOpId || Date.now(),
+    nom, partnerId: parseInt(document.getElementById('o-partner').value),
+    radio: document.getElementById('o-radio').value,
+    deb: document.getElementById('o-deb').value,
+    fin: document.getElementById('o-fin').value,
+    type: document.getElementById('o-type').value,
+    emission: document.getElementById('o-emission').value,
+    statut: document.getElementById('o-statut').value,
+    lot: document.getElementById('o-lot').value,
+    valunit: parseFloat(document.getElementById('o-valunit').value)||0,
+    qty: parseInt(document.getElementById('o-qty').value)||0,
+    dotCond: document.getElementById('o-dot-cond').value,
+    spots: parseInt(document.getElementById('o-spots').value)||0,
+    format: document.getElementById('o-format').value,
+    tranche: document.getElementById('o-tranche').value,
+    promoType: document.getElementById('o-promo-type').value,
+    promoExtra: parseFloat(document.getElementById('o-promo-extra').value)||0,
+    notes: document.getElementById('o-notes').value,
+  };
+  if(editingOpId){
+    const i = operations.findIndex(o=>o.id===editingOpId);
+    if(i>=0) operations[i]=op;
+  } else {
+    operations.push(op);
+  }
+  closeOv('ov-op');
+  renderOps();
+}
+
+function deleteOp(id){
+  if(!confirm('Supprimer cette opération ?')) return;
+  operations = operations.filter(o=>o.id!==id);
+  closeOv('ov-detail');
+  renderOps();
+}
+
+// ══════════════════════════════════════════════
+// DETAIL OPÉRATION (vue lecture)
+// ══════════════════════════════════════════════
+function openOpDetail(id){
+  const op = operations.find(o=>o.id===id);
+  if(!op) return;
+  const p = partners.find(x=>x.id===op.partnerId);
+  const vd = valDot(op), vp = valPromo(op), vs = valSpots(op), sol = vp-vd;
+  const t20 = getTarif20(op.radio);
+  const cf = op.format==='30'?1.4:1;
+  const ch = COEF[op.tranche]||1;
+  const unit = (t20*cf*ch).toFixed(2);
+
+  document.getElementById('detail-op-name').textContent = op.nom;
+  document.getElementById('detail-op-meta').textContent = `${op.radio} · ${p?.nom||'?'} · ${fd(op.deb)} → ${fd(op.fin)}`;
+  document.getElementById('detail-edit-btn').dataset.id = id;
+
+  let dotHTML = '', promoHTML = '';
+
+  if(op.type!=='promotion' && vd>0){
+    dotHTML = `
+      <div class="odd-side">
+        <div class="odd-label teal">🎁 Ce qu'on reçoit — Dotation</div>
+        ${opRow('Lot',op.lot||'—')}
+        ${opRow('Valeur unitaire',fmt(op.valunit))}
+        ${opRow('Quantité',op.qty+' unité'+(op.qty>1?'s':''))}
+        ${op.dotCond?opRow('Conditions',op.dotCond):''}
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--teal-pale)">
+          <div style="font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;margin-bottom:4px">Valeur totale dotation</div>
+          <div style="font-size:24px;font-weight:700;color:var(--teal)">${fmt(vd)}</div>
+        </div>
+      </div>`;
+  } else if(op.type!=='promotion'){
+    dotHTML = `<div class="odd-side"><div class="odd-label teal">🎁 Ce qu'on reçoit — Dotation</div><div style="color:var(--g3);font-size:13px;margin-top:12px">Aucune dotation définie.</div></div>`;
+  }
+
+  if(op.type!=='dotation'){
+    promoHTML = `
+      <div class="odd-side">
+        <div class="odd-label coral">📻 Ce qu'on donne — Promotion</div>
+        ${opRow('Format spot',op.format+'s')}
+        ${opRow('Tranche horaire',op.tranche)}
+        ${opRow('Nombre de spots',op.spots||'0')}
+        ${opRow('Tarif unitaire HT',unit+' €')}
+        ${opRow('Val. spots HT',fmt(vs))}
+        ${op.promoType?opRow('Promo complémentaire',op.promoType):''}
+        ${op.promoExtra?opRow('Val. promo complémentaire',fmt(op.promoExtra)):''}
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--coral-pale)">
+          <div style="font-size:11px;color:var(--coral);font-weight:600;text-transform:uppercase;margin-bottom:4px">Valeur totale promotion HT</div>
+          <div style="font-size:24px;font-weight:700;color:var(--coral)">${fmt(vp)}</div>
+        </div>
+      </div>`;
+  } else {
+    promoHTML = `<div class="odd-side"><div class="odd-label coral">📻 Ce qu'on donne — Promotion</div><div style="color:var(--g3);font-size:13px;margin-top:12px">Aucune promotion antenne.</div></div>`;
+  }
+
+  // Affichage selon type
+  let bodyHTML = '';
+  if(op.type==='dotation'){
+    bodyHTML = `<div style="padding:0">${dotHTML.replace('class="odd-side"','class="odd-side" style="border-radius:0"')}</div>`;
+  } else if(op.type==='promotion'){
+    bodyHTML = `<div style="padding:0">${promoHTML.replace('class="odd-side"','class="odd-side" style="border-radius:0"')}</div>`;
+  } else {
+    bodyHTML = `<div style="display:grid;grid-template-columns:1fr 1px 1fr">
+      ${dotHTML}
+      <div style="background:var(--g1);width:1px"></div>
+      ${promoHTML}
+    </div>`;
+  }
+
+  bodyHTML += `
+    <div style="padding:12px 22px;border-top:2px solid var(--gold);background:var(--gold-pale);display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:11px;color:var(--g4);text-transform:uppercase;font-weight:600;letter-spacing:.08em">Solde échange (promo HT − dotation)</div>
+        <div style="font-size:26px;font-weight:700;color:${sol>=0?'var(--teal)':'var(--coral)'}">${sol>=0?'+':''}${fmt(sol)}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:11px;color:var(--g4)">Émission : <strong>${op.emission||'—'}</strong></div>
+        <div style="font-size:11px;color:var(--g4);margin-top:3px">Statut : <span class="pill p-${op.statut}">${op.statut}</span></div>
+        ${op.notes?`<div style="font-size:11px;color:var(--g4);margin-top:6px;max-width:260px;text-align:right;font-style:italic">${op.notes}</div>`:''}
+      </div>
+    </div>`;
+
+  document.getElementById('detail-body').innerHTML = bodyHTML;
+  document.getElementById('ov-detail').classList.add('open');
+}
+
+function opRow(k,v){ return `<div class="spot-line"><span class="spot-key">${k}</span><span class="spot-val">${v}</span></div>`; }
+
+// ══════════════════════════════════════════════
+// PAGE OPÉRATIONS
+// ══════════════════════════════════════════════
+function renderOps(){
+  const q = (document.getElementById('flt-q')?.value||'').toLowerCase();
+  const ft = document.getElementById('flt-type')?.value||'';
+  const fr = document.getElementById('flt-radio')?.value||'';
+  const fs = document.getElementById('flt-statut')?.value||'';
+
+  let ops = operations.filter(o=>{
+    if(q && !o.nom.toLowerCase().includes(q) && !(partners.find(p=>p.id===o.partnerId)?.nom||'').toLowerCase().includes(q)) return false;
+    if(ft && o.type!==ft.toLowerCase()) return false;
+    if(fr && o.radio!==fr) return false;
+    if(fs && o.statut!==fs) return false;
+    return true;
+  });
+
+  // KPI
+  const totDot = ops.reduce((s,o)=>s+valDot(o),0);
+  const totPro = ops.reduce((s,o)=>s+valPromo(o),0);
+  const sol = totPro-totDot;
+  document.getElementById('kpi-ops').innerHTML = `
+    <div class="kpi k-navy"><div class="kpi-lbl">Opérations</div><div class="kpi-val">${ops.length}</div><div class="kpi-sub">${operations.length} total</div></div>
+    <div class="kpi k-teal"><div class="kpi-lbl">Dotation reçue</div><div class="kpi-val">${fmt(totDot)}</div></div>
+    <div class="kpi k-coral"><div class="kpi-lbl">Promotion offerte HT</div><div class="kpi-val">${fmt(totPro)}</div><div class="kpi-sub">${ops.reduce((s,o)=>s+(o.spots||0),0)} spots</div></div>
+    <div class="kpi k-gold"><div class="kpi-lbl">Solde échange</div><div class="kpi-val" style="color:${sol>=0?'var(--teal)':'var(--coral)'}">${sol>=0?'+':''}${fmt(sol)}</div></div>
+  `;
+
+  const cont = document.getElementById('ops-list');
+  if(!ops.length){ cont.innerHTML = `<div style="text-align:center;padding:48px;color:var(--g3)">Aucune opération trouvée.</div>`; return; }
+  cont.innerHTML = ops.map(o=>opCard(o)).join('');
+}
+
+function opCard(op){
+  const p = partners.find(x=>x.id===op.partnerId);
+  const vd=valDot(op), vp=valPromo(op), vs=valSpots(op), sol=vp-vd;
+  const r = RADIOS.find(x=>x.nom===op.radio);
+
+  let dotSide='', proSide='';
+  if(op.type!=='promotion'){
+    dotSide=`<div class="op-side">
+      <div class="op-side-lbl teal">🎁 Ce qu'on reçoit</div>
+      ${op.lot?`<div class="op-row"><span class="op-key">Lot</span><span class="op-val">${op.lot}</span></div>`:''}
+      ${op.valunit?`<div class="op-row"><span class="op-key">Val. unit.</span><span class="op-val">${fmt(op.valunit)}</span></div>`:''}
+      ${op.qty?`<div class="op-row"><span class="op-key">Quantité</span><span class="op-val">${op.qty}</span></div>`:''}
+      <div class="op-total teal">${fmt(vd)}</div>
+    </div>`;
+  }
+  if(op.type!=='dotation'){
+    proSide=`<div class="op-side">
+      <div class="op-side-lbl coral">📻 Ce qu'on donne</div>
+      ${op.spots?`<div class="op-row"><span class="op-key">Spots ${op.format}s / ${op.tranche}</span><span class="op-val">${op.spots} spots</span></div>`:''}
+      ${vs?`<div class="op-row"><span class="op-key">Val. spots HT</span><span class="op-val">${fmt(vs)}</span></div>`:''}
+      ${op.promoType?`<div class="op-row"><span class="op-key">+ ${op.promoType}</span><span class="op-val">${op.promoExtra?fmt(op.promoExtra):''}</span></div>`:''}
+      <div class="op-total coral">${fmt(vp)}</div>
+    </div>`;
+  }
+
+  // Disposition selon type
+  let bodyContent = '';
+  if(op.type==='dotation') bodyContent=`<div style="display:grid;grid-template-columns:1fr">${dotSide}</div>`;
+  else if(op.type==='promotion') bodyContent=`<div style="display:grid;grid-template-columns:1fr">${proSide}</div>`;
+  else bodyContent=`<div class="op-card-body">${dotSide}<div class="op-divider"></div>${proSide}</div>`;
+
+  return `<div class="op-card" onclick="openOpDetail(${op.id})">
+    <div class="op-card-hdr">
+      <div>
+        <div class="op-card-title">${op.nom}</div>
+        <div class="op-card-meta">${p?.nom||'?'} · ${fd(op.deb)} → ${fd(op.fin)} · ${op.emission||''}</div>
+        <div class="op-card-tags">
+          <span class="pill p-${op.type}">${op.type}</span>
+          <span class="pill" style="background:var(--g1);color:var(--g4);display:flex;align-items:center;gap:4px"><span class="rdot" style="background:${r?.col||'#888'}"></span>${op.radio}</span>
+          <span class="pill p-${op.statut}">${op.statut}</span>
+        </div>
+      </div>
+      <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div style="font-size:11px;color:var(--g4)">Solde échange</div>
+        <div style="font-size:18px;font-weight:700;color:${sol>=0?'var(--teal)':'var(--coral)'}">${sol>=0?'+':''}${fmt(sol)}</div>
+        <button class="btn btn-out btn-sm" onclick="event.stopPropagation();editOp(${op.id})">✏ Modifier</button>
+      </div>
+    </div>
+    ${bodyContent}
+    <div class="op-solde">
+      <span style="color:var(--g4)">Récapitulatif échange</span>
+      <div style="display:flex;gap:24px">
+        ${vd?`<span style="color:var(--teal)">🎁 ${fmt(vd)}</span>`:''}
+        ${vp?`<span style="color:var(--coral)">📻 ${fmt(vp)}</span>`:''}
+        <span style="color:${sol>=0?'var(--teal)':'var(--coral)'}">= ${sol>=0?'+':''}${fmt(sol)}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+// PAGE PARTENAIRES
+// ══════════════════════════════════════════════
+function renderPartners(){
+  const ul = document.getElementById('partner-sb-list');
+  ul.innerHTML = partners.map(p=>`<li class="sb-item ${currentPartner?.id===p.id?'on':''}" onclick="showPartnerDetail(${p.id})">
+    <span class="si-name">${p.nom}</span>
+  </li>`).join('');
+
+  const totD=operations.reduce((s,o)=>s+valDot(o),0);
+  const totP=operations.reduce((s,o)=>s+valPromo(o),0);
+  const sol=totP-totD;
+  document.getElementById('kpi-partners').innerHTML=`
+    <div class="kpi k-navy"><div class="kpi-lbl">Partenaires</div><div class="kpi-val">${partners.length}</div></div>
+    <div class="kpi k-teal"><div class="kpi-lbl">Dotation reçue</div><div class="kpi-val">${fmt(totD)}</div></div>
+    <div class="kpi k-coral"><div class="kpi-lbl">Promotion offerte HT</div><div class="kpi-val">${fmt(totP)}</div></div>
+    <div class="kpi k-gold"><div class="kpi-lbl">Solde échange</div><div class="kpi-val" style="color:${sol>=0?'var(--teal)':'var(--coral)'}">${sol>=0?'+':''}${fmt(sol)}</div></div>
+  `;
+
+  const tbody=document.getElementById('ptable');
+  tbody.innerHTML=partners.map(p=>{
+    const pd=operations.filter(o=>o.partnerId===p.id);
+    const vd=pd.reduce((s,o)=>s+valDot(o),0);
+    const vp=pd.reduce((s,o)=>s+valPromo(o),0);
+    const sol=vp-vd;
+    return `<tr onclick="showPartnerDetail(${p.id})" style="cursor:pointer">
+      <td class="td-b">${p.nom}</td><td class="td-m">${p.secteur}</td><td class="td-m">${p.contact}</td>
+      <td class="td-m" style="font-size:11px">${p.radios.join(', ')}</td>
+      <td class="td-r">${pd.length}</td>
+      <td class="td-r td-teal">${vd?fmt(vd):'—'}</td>
+      <td class="td-r td-coral">${vp?fmt(vp):'—'}</td>
+      <td class="td-r" style="color:${sol>=0?'var(--teal)':'var(--coral)'};font-weight:600">${sol>=0?'+':''}${fmt(sol)}</td>
+      <td><button class="btn btn-out btn-sm" onclick="event.stopPropagation();openOpModal(${p.id})">+ Op.</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterPartners(q){
+  document.querySelectorAll('#partner-sb-list .sb-item').forEach(li=>{
+    li.style.display=li.textContent.toLowerCase().includes(q.toLowerCase())?'flex':'none';
+  });
+}
+
+function showPartnerDetail(id){
+  currentPartner=partners.find(p=>p.id===id);
+  document.getElementById('pv-list').style.display='none';
+  document.getElementById('pv-detail').style.display='block';
+  renderPartnerSb();
+  renderPDetailHdr();
+  ptab('ops');
+}
+
+function renderPartnerSb(){
+  document.querySelectorAll('#partner-sb-list .sb-item').forEach(li=>{
+    li.classList.toggle('on', parseInt(li.onclick?.toString().match(/\d+/)?.[0])||0 === currentPartner?.id);
+  });
+}
+
+function backPartners(){
+  currentPartner=null;
+  document.getElementById('pv-list').style.display='block';
+  document.getElementById('pv-detail').style.display='none';
+  renderPartners();
+}
+
+function renderPDetailHdr(){
+  const p=currentPartner;
+  const pd=operations.filter(o=>o.partnerId===p.id);
+  const vd=pd.reduce((s,o)=>s+valDot(o),0), vp=pd.reduce((s,o)=>s+valPromo(o),0), sol=vp-vd;
+  document.getElementById('pdetail-hdr').innerHTML=`<div class="p-hdr">
+    <div class="p-av">${p.nom[0]}</div>
+    <div class="p-info" style="flex:1">
+      <h2>${p.nom}</h2>
+      <div class="pm">${p.secteur} · ${p.contact}${p.email?' · '+p.email:''}</div>
+      <div class="p-tags">
+        ${p.radios.map(r=>{const rd=RADIOS.find(x=>x.nom===r);return`<span class="pill" style="background:var(--g1);color:var(--g4);display:flex;align-items:center;gap:3px"><span class="rdot" style="background:${rd?.col||'#888'}"></span>${r}</span>`;}).join('')}
+      </div>
+    </div>
+    <div style="display:flex;gap:24px;align-items:center">
+      <div style="text-align:center"><div style="font-size:10px;color:var(--g3);text-transform:uppercase;font-weight:600">Dotation</div><div style="font-size:20px;font-weight:600;color:var(--teal)">${fmt(vd)}</div></div>
+      <div style="text-align:center"><div style="font-size:10px;color:var(--g3);text-transform:uppercase;font-weight:600">Promotion HT</div><div style="font-size:20px;font-weight:600;color:var(--coral)">${fmt(vp)}</div></div>
+      <div style="text-align:center"><div style="font-size:10px;color:var(--g3);text-transform:uppercase;font-weight:600">Solde</div><div style="font-size:20px;font-weight:600;color:${sol>=0?'var(--teal)':'var(--coral)'}">${sol>=0?'+':''}${fmt(sol)}</div></div>
+      <button class="btn btn-gold btn-sm" onclick="openOpModal(${p.id})">+ Opération</button>
+    </div>
+  </div>`;
+}
+
+function ptab(tab, btn){
+  document.querySelectorAll('.itab').forEach(b=>b.classList.remove('on'));
+  ['pt-ops','pt-dotations','pt-promotions','pt-bilan'].forEach(id=>{
+    document.getElementById(id).style.display='none';
+  });
+  if(btn && btn!=='this') btn.classList.add('on');
+  else document.querySelectorAll('.itab').forEach(b=>{if(b.onclick?.toString().includes("'"+tab+"'"))b.classList.add('on');});
+  document.getElementById('pt-'+tab).style.display='block';
+
+  const pd=operations.filter(o=>o.partnerId===currentPartner?.id);
+  if(tab==='ops'){
+    document.getElementById('pt-ops').innerHTML = pd.length ? pd.map(o=>opCard(o)).join('') : '<div style="color:var(--g3);padding:32px;text-align:center">Aucune opération pour ce partenaire.</div>';
+  }
+  if(tab==='dotations'){
+    const dots=pd.filter(o=>o.type!=='promotion'&&o.qty>0);
+    document.getElementById('pt-dotations').innerHTML = dots.length ? `<div class="tcard"><table>
+      <thead><tr><th>Opération</th><th>Radio</th><th>Lot</th><th>Val. unit.</th><th>Qté</th><th>Val. totale</th><th>Conditions</th></tr></thead>
+      <tbody>${dots.map(o=>`<tr onclick="openOpDetail(${o.id})" style="cursor:pointer">
+        <td class="td-b">${o.nom}</td><td>${o.radio}</td><td>${o.lot||'—'}</td>
+        <td class="td-r">${fmt(o.valunit)}</td><td class="td-r">${o.qty}</td>
+        <td class="td-r td-teal">${fmt(valDot(o))}</td>
+        <td class="td-m" style="font-size:11px">${o.dotCond||'—'}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>` : '<div style="color:var(--g3);padding:32px;text-align:center">Aucune dotation.</div>';
+  }
+  if(tab==='promotions'){
+    const pros=pd.filter(o=>o.type!=='dotation'&&(o.spots>0||o.promoExtra>0));
+    document.getElementById('pt-promotions').innerHTML = pros.length ? `<div class="tcard"><table>
+      <thead><tr><th>Opération</th><th>Radio</th><th>Format</th><th>Tranche</th><th>Spots</th><th>Tarif unit. HT</th><th>Val. spots HT</th><th>Extra</th><th>Total promo</th></tr></thead>
+      <tbody>${pros.map(o=>{
+        const t20=getTarif20(o.radio),cf=o.format==='30'?1.4:1,ch=COEF[o.tranche]||1,unit=(t20*cf*ch).toFixed(2);
+        return`<tr onclick="openOpDetail(${o.id})" style="cursor:pointer">
+          <td class="td-b">${o.nom}</td><td>${o.radio}</td><td>${o.format}s</td><td>${o.tranche}</td>
+          <td class="td-r">${o.spots||'—'}</td><td class="td-r">${unit} €</td>
+          <td class="td-r td-coral">${fmt(valSpots(o))}</td>
+          <td class="td-r">${o.promoExtra?fmt(o.promoExtra):'—'}</td>
+          <td class="td-r td-coral" style="font-size:15px">${fmt(valPromo(o))}</td>
+        </tr>`;}).join('')}</tbody>
+    </table></div>` : '<div style="color:var(--g3);padding:32px;text-align:center">Aucune promotion.</div>';
+  }
+  if(tab==='bilan'){
+    const vd=pd.reduce((s,o)=>s+valDot(o),0), vp=pd.reduce((s,o)=>s+valPromo(o),0), sol=vp-vd;
+    const mx=Math.max(vd,vp,1);
+    document.getElementById('pt-bilan').innerHTML=`<div class="bilan-grid">
+      <div class="bilan-card">
+        <div class="bc-title">Bilan valorisation échange</div>
+        <div class="bc-row"><span>Dotation reçue</span><span style="color:var(--teal);font-weight:600">${fmt(vd)}</span></div>
+        <div class="pb-wrap"><div class="pb-bg"><div class="pb-fill pb-teal" style="width:${(vd/mx*100).toFixed(0)}%"></div></div></div>
+        <div class="bc-row"><span>Promotion offerte HT</span><span style="color:var(--coral);font-weight:600">${fmt(vp)}</span></div>
+        <div class="pb-wrap"><div class="pb-bg"><div class="pb-fill pb-coral" style="width:${(vp/mx*100).toFixed(0)}%"></div></div></div>
+        <div class="bc-row" style="font-weight:600;border-top:2px solid var(--gold);margin-top:8px;padding-top:8px">
+          <span>Solde échange</span><span style="font-size:18px;color:${sol>=0?'var(--teal)':'var(--coral)'}">${sol>=0?'+':''}${fmt(sol)}</span>
+        </div>
+      </div>
+      <div class="bilan-card">
+        <div class="bc-title">Par opération</div>
+        ${pd.map(o=>{const vd2=valDot(o),vp2=valPromo(o),sol2=vp2-vd2;return`
+          <div class="bc-row" onclick="openOpDetail(${o.id})" style="cursor:pointer">
+            <span style="font-size:12px">${o.nom}</span>
+            <div style="display:flex;gap:10px;font-size:12px">
+              ${vd2?`<span style="color:var(--teal)">🎁${fmt(vd2)}</span>`:''}
+              ${vp2?`<span style="color:var(--coral)">📻${fmt(vp2)}</span>`:''}
+              <span style="color:${sol2>=0?'var(--teal)':'var(--coral)'};font-weight:600">${sol2>=0?'+':''}${fmt(sol2)}</span>
+            </div>
+          </div>`;}).join('')}
+      </div>
+    </div>`;
+  }
+}
+
+// ══════════════════════════════════════════════
+// PAGE RADIO
+// ══════════════════════════════════════════════
+function renderRadioPage(){
+  const ul=document.getElementById('radio-sb-list');
+  ul.innerHTML=RADIOS.map(r=>`<li class="sb-item ${r.nom===currentRadio?'on':''}" onclick="setRadio('${r.nom}')">
+    <span class="rdot" style="background:${r.col}"></span><span class="si-name">${r.nom}</span>
+  </li>`).join('');
+
+  document.getElementById('rp-title').textContent=currentRadio;
+  const rops=operations.filter(o=>o.radio===currentRadio);
+  const vd=rops.reduce((s,o)=>s+valDot(o),0), vp=rops.reduce((s,o)=>s+valPromo(o),0), sol=vp-vd;
+  document.getElementById('kpi-radio').innerHTML=`
+    <div class="kpi k-navy"><div class="kpi-lbl">Opérations</div><div class="kpi-val">${rops.length}</div></div>
+    <div class="kpi k-teal"><div class="kpi-lbl">Dotation reçue</div><div class="kpi-val">${fmt(vd)}</div></div>
+    <div class="kpi k-coral"><div class="kpi-lbl">Promotion HT</div><div class="kpi-val">${fmt(vp)}</div></div>
+    <div class="kpi k-gold"><div class="kpi-lbl">Solde</div><div class="kpi-val" style="color:${sol>=0?'var(--teal)':'var(--coral)'}">${sol>=0?'+':''}${fmt(sol)}</div></div>
+  `;
+
+  renderCal('cal-dot', rops.filter(o=>o.type!=='promotion'), 'dot', calMon.dot);
+  renderCal('cal-promo', rops.filter(o=>o.type!=='dotation'), 'promo', calMon.promo);
+
+  document.getElementById('radio-ops-list').innerHTML = rops.length ? rops.map(o=>opCard(o)).join('') : '<div style="color:var(--g3);padding:32px;text-align:center">Aucune opération sur cette radio.</div>';
+}
+
+function setRadio(r){ currentRadio=r; renderRadioPage(); }
+
+function renderCal(cid, evts, key, month){
+  const y=month.getFullYear(), m=month.getMonth();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const firstDay=new Date(y,m,1).getDay();
+  const mois=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  let html=`<div class="cal-hdr">
+    <button class="cal-nav" onclick="changeCalMon('${key}','${cid}',-1)">‹</button>
+    <div class="cal-month">${mois[m]} ${y}</div>
+    <button class="cal-nav" onclick="changeCalMon('${key}','${cid}',1)">›</button>
+  </div><div class="cal-grid">
+    ${['L','M','M','J','V','S','D'].map(d=>`<div class="cal-dname">${d}</div>`).join('')}`;
+  const off=(firstDay===0?6:firstDay-1);
+  for(let i=0;i<off;i++) html+=`<div class="cal-d empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const date=new Date(y,m,d);
+    const de=evts.filter(o=>date>=new Date(o.deb)&&date<=new Date(o.fin));
+    html+=`<div class="cal-d ${de.length?'has':''}">
+      <div class="cal-dnum">${d}</div>
+      ${de.slice(0,2).map(o=>`<div class="cal-ev ev-${o.type==='mixte'?'m':o.type==='dotation'?'d':'p'}" onclick="openOpDetail(${o.id})">${o.nom.substring(0,14)}…</div>`).join('')}
+      ${de.length>2?`<div style="font-size:10px;color:var(--g3)">+${de.length-2}</div>`:''}
+    </div>`;
+  }
+  html+='</div>';
+  document.getElementById(cid).innerHTML=html;
+}
+
+function changeCalMon(key,cid,delta){
+  calMon[key]=new Date(calMon[key].getFullYear(),calMon[key].getMonth()+delta,1);
+  const rops=operations.filter(o=>o.radio===currentRadio);
+  const evts=key==='dot'?rops.filter(o=>o.type!=='promotion'):rops.filter(o=>o.type!=='dotation');
+  renderCal(cid,evts,key,calMon[key]);
+}
+
+// ══════════════════════════════════════════════
+// PAGE REPORTING
+// ══════════════════════════════════════════════
+function renderReporting(radioFilter){
+  const ops=operations.filter(o=>!radioFilter||o.radio===radioFilter);
+  const totD=ops.reduce((s,o)=>s+valDot(o),0), totP=ops.reduce((s,o)=>s+valPromo(o),0), sol=totP-totD;
+  const nbSpots=ops.reduce((s,o)=>s+(o.spots||0),0);
+  document.getElementById('kpi-rp').innerHTML=`
+    <div class="kpi k-navy"><div class="kpi-lbl">Opérations</div><div class="kpi-val">${ops.length}</div></div>
+    <div class="kpi k-teal"><div class="kpi-lbl">Dotation reçue</div><div class="kpi-val">${fmt(totD)}</div></div>
+    <div class="kpi k-coral"><div class="kpi-lbl">Promotion HT</div><div class="kpi-val">${fmt(totP)}</div><div class="kpi-sub">${nbSpots} spots</div></div>
+    <div class="kpi k-gold"><div class="kpi-lbl">Solde échange</div><div class="kpi-val" style="color:${sol>=0?'var(--teal)':'var(--coral)'}">${sol>=0?'+':''}${fmt(sol)}</div></div>
+  `;
+
+  // Par radio
+  const byR={};
+  RADIOS.forEach(r=>{const rd=ops.filter(o=>o.radio===r.nom);if(rd.length)byR[r.nom]={d:rd.reduce((s,o)=>s+valDot(o),0),p:rd.reduce((s,o)=>s+valPromo(o),0),n:rd.length};});
+  const mxR=Math.max(...Object.values(byR).map(v=>Math.max(v.d,v.p)),1);
+  // Par partenaire
+  const byP={};
+  partners.forEach(p=>{const pd=ops.filter(o=>o.partnerId===p.id);if(pd.length)byP[p.nom]={d:pd.reduce((s,o)=>s+valDot(o),0),p:pd.reduce((s,o)=>s+valPromo(o),0)};});
+
+  document.getElementById('bilan-grid').innerHTML=`
+    <div class="bilan-card"><div class="bc-title">Par radio</div>
+      ${Object.entries(byR).map(([r,v])=>`
+        <div class="bc-row"><span style="font-size:12px">${r} <span style="color:var(--g3)">(${v.n})</span></span>
+          <div style="display:flex;gap:10px;font-size:12px"><span style="color:var(--teal)">${fmt(v.d)}</span><span style="color:var(--coral)">${fmt(v.p)}</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:3px 0 8px">
+          <div class="pb-bg" style="height:5px"><div class="pb-fill pb-teal" style="width:${(v.d/mxR*100).toFixed(0)}%;height:5px;border-radius:20px"></div></div>
+          <div class="pb-bg" style="height:5px"><div class="pb-fill pb-coral" style="width:${(v.p/mxR*100).toFixed(0)}%;height:5px;border-radius:20px"></div></div>
+        </div>`).join('')}
+      <div style="font-size:11px;color:var(--g3);margin-top:8px"><span style="color:var(--teal)">■</span> Dotation &nbsp;<span style="color:var(--coral)">■</span> Promo HT</div>
+    </div>
+    <div class="bilan-card"><div class="bc-title">Par partenaire</div>
+      ${Object.entries(byP).map(([name,v])=>`<div class="bc-row">
+        <span style="font-size:12px">${name}</span>
+        <div style="display:flex;gap:10px;font-size:12px">
+          ${v.d?`<span style="color:var(--teal)">🎁${fmt(v.d)}</span>`:''}
+          ${v.p?`<span style="color:var(--coral)">📻${fmt(v.p)}</span>`:''}
+        </div>
+      </div>`).join('')}
+    </div>
+  `;
+
+  document.getElementById('rp-table').innerHTML=ops.map(o=>{
+    const p=partners.find(x=>x.id===o.partnerId), vd=valDot(o), vp=valPromo(o), sol=vp-vd;
+    return`<tr onclick="openOpDetail(${o.id})" style="cursor:pointer">
+      <td class="td-b">${o.nom}</td><td>${p?.nom||'?'}</td><td>${o.radio}</td>
+      <td><span class="pill p-${o.type}">${o.type}</span></td>
+      <td class="td-m">${fd(o.deb)} → ${fd(o.fin)}</td>
+      <td class="td-r">${o.spots||'—'}</td>
+      <td class="td-r td-coral">${vp?fmt(vp):'—'}</td>
+      <td class="td-r td-teal">${vd?fmt(vd):'—'}</td>
+      <td class="td-r" style="font-weight:700;color:${sol>=0?'var(--teal)':'var(--coral)'}">${sol>=0?'+':''}${fmt(sol)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// PAGE TARIFS
+// ══════════════════════════════════════════════
+function renderTarifs(){
+  const ul=document.getElementById('tarif-sb-list');
+  const unique=[...new Set(TARIFS.map(t=>t.radio))];
+  ul.innerHTML=unique.map(r=>`<li class="sb-item" onclick="filterTarifs('${r}',this)">${r}</li>`).join('');
+  document.getElementById('tarif-table').innerHTML=TARIFS.map(t=>`<tr>
+    <td class="td-b">${t.radio}</td><td>${t.zone}</td><td class="td-m">—</td>
+    <td><span class="pill" style="background:var(--navy);color:#fff;font-size:10px">SEULE</span></td>
+    <td class="td-r td-gold">${t.t20.toFixed(2)} €</td>
+    <td class="td-r">${t.t30.toFixed(2)} €</td>
+    <td class="td-r td-m">—</td><td class="td-r td-m">—</td>
+  </tr>`).join('');
+}
+
+function filterTarifs(radio, el){
+  document.querySelectorAll('#tarif-sb-list .sb-item').forEach(i=>i.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('tarif-table').innerHTML=TARIFS.filter(t=>t.radio===radio).map(t=>`<tr>
+    <td class="td-b">${t.radio}</td><td>${t.zone}</td><td class="td-m">—</td>
+    <td><span class="pill" style="background:var(--navy);color:#fff;font-size:10px">SEULE</span></td>
+    <td class="td-r td-gold">${t.t20.toFixed(2)} €</td>
+    <td class="td-r">${t.t30.toFixed(2)} €</td>
+    <td class="td-r td-m">—</td><td class="td-r td-m">—</td>
+  </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════
+// PARTENAIRE MODAL
+// ══════════════════════════════════════════════
+function openPartnerModal(){
+  document.getElementById('np-nom').value='';
+  document.getElementById('np-secteur').value='';
+  document.getElementById('np-contact').value='';
+  document.getElementById('np-email').value='';
+  document.getElementById('np-notes').value='';
+  document.getElementById('np-radios').innerHTML=RADIOS.map(r=>`<label style="font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer">
+    <input type="checkbox" value="${r.nom}" style="width:auto"> ${r.nom}
+  </label>`).join('');
+  document.getElementById('ov-partner').classList.add('open');
+}
+
+function savePartner(){
+  const nom=document.getElementById('np-nom').value.trim();
+  if(!nom) return;
+  const radios=[...document.querySelectorAll('#np-radios input:checked')].map(cb=>cb.value);
+  partners.push({id:Date.now(),nom,secteur:document.getElementById('np-secteur').value,
+    contact:document.getElementById('np-contact').value,email:document.getElementById('np-email').value,
+    radios:radios.length?radios:['M Radio'],notes:document.getElementById('np-notes').value});
+  closeOv('ov-partner');
+  renderPartners();
+}
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+function fmt(n){ return Math.round(n).toLocaleString('fr-FR')+' €'; }
+function fd(s){ if(!s) return '—'; const [y,m,d]=s.split('-'); return `${d}/${m}/${y}`; }
+function closeOv(id){ document.getElementById(id).classList.remove('open'); }
+
+function exportCSV(){
+  const rows=[['Opération','Partenaire','Radio','Type','Début','Fin','Spots','Format','Tranche','Tarif unit.','Val spots HT','Val dotation','Solde']];
+  operations.forEach(o=>{
+    const p=partners.find(x=>x.id===o.partnerId);
+    const t20=getTarif20(o.radio),cf=o.format==='30'?1.4:1,ch=COEF[o.tranche]||1;
+    rows.push([o.nom,p?.nom||'',o.radio,o.type,o.deb,o.fin,o.spots||0,o.format+'s',o.tranche,(t20*cf*ch).toFixed(2),valPromo(o),valDot(o),valPromo(o)-valDot(o)]);
+  });
+  const csv=rows.map(r=>r.join(';')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download='eg_operations.csv';
+  a.click();
+}
+
+// Peupler le filtre radio dans la sidebar opérations
+(function initRadioFilter(){
+  const sel=document.getElementById('flt-radio');
+  RADIOS.forEach(r=>{ const o=document.createElement('option'); o.value=r.nom; o.textContent=r.nom; sel.appendChild(o); });
+
+  // Liste radio reporting
+  let rpFilter='';
+  const ul=document.getElementById('rp-radio-list');
+  const allLi=document.createElement('li');
+  allLi.className='sb-item on';
+  allLi.textContent='Toutes les radios';
+  allLi.onclick=()=>{ rpFilter=''; ul.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on')); allLi.classList.add('on'); renderReporting(''); };
+  ul.appendChild(allLi);
+  RADIOS.forEach(r=>{
+    const li=document.createElement('li');
+    li.className='sb-item';
+    li.innerHTML=`<span class="rdot" style="background:${r.col}"></span><span class="si-name">${r.nom}</span>`;
+    li.onclick=()=>{ rpFilter=r.nom; ul.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on')); li.classList.add('on'); renderReporting(r.nom); };
+    ul.appendChild(li);
+  });
+})();
+
+nav('operations');
+</script>
+</body>
+</html>
